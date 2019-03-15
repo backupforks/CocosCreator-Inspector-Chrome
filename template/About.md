@@ -5,6 +5,8 @@ https://github.com/YuraDev/vue-chrome-extension-template/issues/19
 
 我使用的是8.4.0
 ## 怎么切换node版本
+切换完版本之后,记得删除node_modules目录,从新`npm i`
+
 `mac`
 > 安装`n`扩展包: sudo npm i n -g
 ![](../docs/about/7f59e923.png)
