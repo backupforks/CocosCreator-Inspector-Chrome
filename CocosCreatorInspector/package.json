@@ -1,0 +1,50 @@
+{
+  "name": "cocos-inspector",
+  "description": "Cocos Creator Inspector",
+  "version": "1.0.0",
+  "author": "xu_yanfeng",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev-server": "webpack-dev-server --inline --progress --open --hot --port 8888",
+    "dev-index": "cross-env NODE_ENV=development webpack-dev-server --open http://localhost:8082/index.html --inline  --progress --hot --port 8082",
+    "dev-popup": "cross-env NODE_ENV=development webpack-dev-server --open http://localhost:8083/popup.html --inline  --progress --hot --port 8083",
+    "dev-inspector": "cross-env NODE_ENV=development webpack-dev-server --open http://localhost:8084/devInspector.html --inline --progress --hot --port 8084",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "fs-extra": "^5.0.0",
+    "gulp": "^3.9.1",
+    "gulp-shell": "^0.6.5",
+    "node-sass": "^4.7.2",
+    "path": "^0.12.7",
+    "sass-loader": "^6.0.6",
+    "url-loader": "^0.6.2",
+    "vue": "^2.4.4",
+    "vue-awesome": "^2.3.4"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.17",
+    "copy-webpack-plugin": "^4.0.1",
+    "cross-env": "^5.0.5",
+    "css-loader": "^0.28.7",
+    "element-ui": "^2.0.11",
+    "file-loader": "^1.1.4",
+    "html-webpack-plugin": "^2.30.1",
+    "style-loader": "^0.19.0",
+    "vue-loader": "^13.0.5",
+    "vue-template-compiler": "^2.4.4",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.1"
+  }
+}
