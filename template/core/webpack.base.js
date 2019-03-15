@@ -90,7 +90,7 @@ module.exports = {
     ]
   },
   plugins: [
-    htmlPage('home', 'app', ['tab']),
+    htmlPage('home', 'tap', ['tab']),
     htmlPage('popup', 'popup', ['popup']),
     htmlPage('panel', 'panel', ['panel']),
     htmlPage('devtools', 'devtools', ['devtools']),

@@ -1,10 +1,8 @@
-<template lang="pug">
+<template>
     <div>
-    <button>222</button>
-
-
+        <span>选项</span>
+        <el-button size="mini">222</el-button>
     </div>
-
 </template>
 <script>
     export default {

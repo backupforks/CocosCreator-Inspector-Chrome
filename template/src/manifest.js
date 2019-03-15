@@ -1,8 +1,8 @@
 module.exports = {
-    name: 'Vue Extension',
+    name: 'CC-Inspector',
     version: '1.0.0',
-    description: 'Vue.js Chrome Extension Template (wcer)',
-    author: 'yura',
+    description: 'cocos creator inspector',
+    author: 'xu_yanfeng',
     manifest_version: 2,
     icons: {'16': 'icons/16.png', '128': 'icons/128.png'},
     permissions: [

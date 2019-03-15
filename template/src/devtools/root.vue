@@ -1,5 +1,8 @@
-<template lang="pug">
-    div devtools
+<template lang="html">
+    <div>
+        <el-button size="mini" @click="onClickTest"> 检测</el-button>
+
+    </div>
 </template>
 <script>
     export default {
@@ -9,7 +12,11 @@
         },
         mounted() {
         },
-        methods: {}
+        methods: {
+            onClickTest() {
+                console.log("onClickTest")
+            }
+        }
     }
 </script>
 <style lang="scss">
