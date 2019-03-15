@@ -1,12 +1,15 @@
 <template lang="html">
     <div>
+        <span>{{tips}}</span>
         <el-button size="mini" @click="onClickTest"> 检测</el-button>
 
     </div>
 </template>
 <script>
     export default {
-        data: () => ({}),
+        data: () => ({
+            tips: "",
+        }),
         computed: {},
         created() {
         },
@@ -14,7 +17,16 @@
         },
         methods: {
             onClickTest() {
+                this.tips = "";
                 console.log("onClickTest")
+                let views = chrome.extension.getViews({type: 'popup'});
+                if (views.length > 0) {
+                    this.tips = "找到popup";
+                    console.log(views[0].location.href);
+                } else {
+                    this.tips = "未找到popup";
+
+                }
             }
         }
     }

@@ -4,6 +4,7 @@
             <h3>{{title}}</h3>
             <div style="flex: 1"></div>
             <el-button size="mini" @click="tab">设置</el-button>
+            <el-button size="mini" @click="onMsgToBg">To-Bg</el-button>
         </div>
         <div style="text-align: center;width: 100%; color: #6d6d6d;">
             <span>支持作者</span>
@@ -50,6 +51,13 @@
         methods: {
             tab() {
                 chrome.tabs.create({url: 'pages/tap.html'})
+            },
+            onMsgToBg(){
+                debugger
+                let bg = chrome.extension.getBackgroundPage();
+                if(bg){
+                    bg.test();
+                }
             }
         }
     }

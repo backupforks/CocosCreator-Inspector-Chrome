@@ -19,7 +19,8 @@
     "lint": "eslint --ext .js,.vue src",
     "dev": "webpack --config ./core/webpack.dev.js --hide-modules",
     "dev-info": "webpack --config ./core/webpack.dev.js",
-    "build": "webpack --config ./core/webpack.prod.js -p --progress  --hide-modules --colors"
+    "build": "webpack --config ./core/webpack.prod.js -p --progress  --hide-modules --colors",
+    "webpack": "webpack --config ./core/webpack.config.js --watch"
   },
   "devDependencies": {
     "archiver": "^2.1.0",

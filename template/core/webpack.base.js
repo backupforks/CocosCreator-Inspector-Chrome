@@ -96,6 +96,7 @@ module.exports = {
     htmlPage('devtools', 'devtools', ['devtools']),
     htmlPage('options', 'options', ['options']),
     htmlPage('background', 'background', ['background']),
+
     new CopyWebpackPlugin([{ from: path.join(__dirname, '..', 'static') }]),
     new ChromeReloadPlugin({
       port: 9090,
