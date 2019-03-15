@@ -18,6 +18,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "dev": "webpack --config ./core/webpack.dev.js --hide-modules",
+    "dev-info": "webpack --config ./core/webpack.dev.js",
     "build": "webpack --config ./core/webpack.prod.js -p --progress  --hide-modules --colors"
   },
   "devDependencies": {
@@ -31,7 +32,7 @@
     "babel-register": "^6.26.0",
     "buble": "^0.16.0",
     "buble-loader": "^0.4.1",
-    "clean-webpack-plugin": "^0.1.17",
+    "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.2.0",
     "cross-env": "^5.1.0",
     "css-loader": "^0.28.7",

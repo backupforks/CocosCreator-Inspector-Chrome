@@ -1,3 +1,5 @@
 core/*.js
-core/*/*.js
+core/**/*.js
 build/*.js
+
+src/**/*.*

@@ -7,6 +7,6 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 /* eslint-disable no-new */
 new Vue({
-  el: '#root',
-  render: h => h(root)
+    el: '#root',
+    render: h => h(root)
 })

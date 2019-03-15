@@ -1,18 +1,24 @@
 <template lang="pug">
-    div tab
+    <div>
+    <button>222</button>
+
+
+    </div>
+
 </template>
 <script>
-  export default {
-    data: () => ({
-    }),
-    computed: { },
-    created () { },
-    mounted () { },
-    methods: { }
-  }
+    export default {
+        data: () => ({}),
+        computed: {},
+        created() {
+        },
+        mounted() {
+        },
+        methods: {}
+    }
 </script>
 <style lang="scss">
-  div {
-    color: blue
-  }
+    div {
+        color: blue
+    }
 </style>
