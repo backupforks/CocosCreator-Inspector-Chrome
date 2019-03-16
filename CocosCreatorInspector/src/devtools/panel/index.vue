@@ -29,7 +29,8 @@
 </template>
 
 <script>
-  import injectScript from '../injectScript.js'
+  // import injectScript from '../injectScript.js'
+  let injectScript = "";
 
   export default {
     name: "app",

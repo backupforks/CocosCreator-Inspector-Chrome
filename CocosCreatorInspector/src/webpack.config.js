@@ -31,11 +31,11 @@ module.exports = {
   entry: {
     popup: resolve("popup"),
     devtools: resolve("devtools"),
-    dev_panel:resolve("devtools/dev_panel"),
+    devtools_panel:resolve("devtools/panel"),
     background: resolve("background"),
     options: resolve('options'),
     content: resolve("content"),
-    inject: resolve('content/inject')
+    inject: resolve('content/inject'),
 
     // devInspector: path.resolve(__dirname, './src/dev/devInspector/main.js'),
     // dev: path.resolve(__dirname, './src/dev/dev.js'),
@@ -61,7 +61,7 @@ module.exports = {
 
     htmlPage("popup", 'popup', ['popup']),
     htmlPage("devtools", 'devtools', ['devtools']),
-    htmlPage("dev_panel", 'dev_panel', ['dev_panel']),
+    htmlPage("devtools_panel", 'devtools_panel', ['devtools_panel']),
     htmlPage("options", 'options', ['options']),
     htmlPage('background', 'background', ['background']),
     new ChromeManifest({

@@ -23,7 +23,7 @@
 //   sidebar.setObject({some_data: "some data to show!"});
 // });
 
-chrome.devtools.panels.create("Cocos", "icon/icon48.png", "pages/dev_panel.html",
+chrome.devtools.panels.create("Cocos", "icon/icon48.png", "pages/devtools_panel.html",
   function (panel) {
     console.log("[Cocos Creator Inspector] Dev Panel Created!");
 

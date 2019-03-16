@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import App from './App.vue';
+import index from './index.vue';
 
 import ui_prop from './ui/ui-prop.vue'
 import NodeBaseProperty from './ccType/NodeBaseProperty.vue'
@@ -19,5 +19,5 @@ Vue.component('ColorPicker', ColorPicker);
 Vue.use(ElementUI);
 new Vue({
   el: '#app',
-  render: h => h(App)
+  render: h => h(index)
 });
