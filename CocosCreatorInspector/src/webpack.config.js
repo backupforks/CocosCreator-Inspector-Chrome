@@ -138,11 +138,27 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /node_modules/
       },
+      // {
+      //   test: /\.(png|jpg|gif|svg|ttf|woff|woff2|eot)$/,
+      //   loader: 'file-loader',
+      //   options: {
+      //     name: '[name].[ext]?[hash]'
+      //   }
+      // },
       {
-        test: /\.(png|jpg|gif|svg|ttf|woff|woff2|eot)$/,
-        loader: 'file-loader',
+        test: /\.(png|jpg|gif|svg)(\?.*)?$/,
+        loader: 'url-loader',
         options: {
-          name: '[name].[ext]?[hash]'
+          limit: 10000,
+          name: 'img/[name].[hash:7].[ext]'
+        }
+      },
+      {
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: 'fonts/[name].[hash:7].[ext]'
         }
       }
     ]

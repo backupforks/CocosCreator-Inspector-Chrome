@@ -12,7 +12,7 @@
     <br/>
     <div style="margin:0 auto;width:100%;">
       <div style="width: 200px; margin: 0 auto;" v-show="isShowMoneyPng">
-        <img style="width: 100%;height: auto;" src="res/money.jpg">
+        <img style="width: 100%;height: auto;" src="./res/money.jpg">
       </div>
     </div>
     <br/>
@@ -20,17 +20,17 @@
       <span style="font-size: 14px;float: left;text-align: center;line-height: 30px;color: #6d6d6d;">联系方式:</span>
       <div style="height: 100%;float: right;margin-right: 10px;">
         <a href="https://github.com/tidys/CocosCreatorPlugins/tree/master/CocosCreatorInspector" target="_blank">
-          <img src="res/github.png" style="height: 100%;">
+          <img src="./res/github.png" style="height: 100%;">
         </a>
       </div>
       <div style="height: 100%;float: right;margin-right: 10px;">
         <a href="https://jq.qq.com/?_wv=1027&k=5SdPdy2" target="_blank">
-          <img src="res/qq.png" style="height: 100%;">
+          <img src="./res/qq.png" style="height: 100%;">
         </a>
       </div>
       <div style="height: 100%;float: right;margin-right: 10px;">
         <a href="http://forum.cocos.com/t/chrome-creator/55669" target="_blank">
-          <img src="res/tiezi.png" style="height: 100%;">
+          <img src="./res/tiezi.png" style="height: 100%;">
         </a>
       </div>
     </div>
@@ -55,11 +55,18 @@
     methods: {
       onBtnClickGitHub() {
         console.log("onBtnClickGitHub");
+      },
+      onClickOptions() {
+        chrome.tabs.create({url: 'pages/options.html'})
+      },
+      onMsgToBg(){
+        debugger
+        let bg = chrome.extension.getBackgroundPage();
+        if(bg){
+          bg.test();
+        }
       }
     },
-    onClickOptions() {
-      chrome.tabs.create({url: 'pages/options.html'})
-    }
   }
 </script>
 
