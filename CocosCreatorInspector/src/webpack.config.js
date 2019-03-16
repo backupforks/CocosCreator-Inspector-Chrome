@@ -33,8 +33,8 @@ module.exports = {
     devtools: resolve("devtools"),
     background: resolve("background"),
     options: resolve('options'),
-    content:resolve("content"),
-    inject:resolve('content/inject')
+    content: resolve("content"),
+    inject: resolve('content/inject')
 
     // devInspector: path.resolve(__dirname, './src/dev/devInspector/main.js'),
     // dev: path.resolve(__dirname, './src/dev/dev.js'),
@@ -91,18 +91,13 @@ module.exports = {
     //   chunks: ['devInspector']
     // }),
 
-    // // 拷贝静态资源(manifest.json)
-    // new CopyWebpackPlugin([
-    //   {
-    //     from: path.resolve(__dirname, 'src/assets/'),
-    //     to: 'static',
-    //     force: true,
-    //     // ignore: ['.*']
-    //   },
-    //   {
-    //     from: path.resolve(__dirname, 'src/manifest.json'),
-    //     to: path.resolve(__dirname, 'dist/')
-    //   }]),
+    // 拷贝静态资源(manifest.json)
+    new CopyWebpackPlugin([{
+      from: path.resolve(__dirname, 'icon'),
+      to: 'icon',
+      force: true,
+      // ignore: ['.*']
+    }]),
     // new webpack.DefinePlugin({
     //   'process.env': {
     //     NODE_ENV: '"production"'

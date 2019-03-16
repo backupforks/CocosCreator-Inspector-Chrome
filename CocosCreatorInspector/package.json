@@ -11,7 +11,7 @@
     "dev-popup": "cross-env NODE_ENV=development webpack-dev-server --open http://localhost:8083/popup.html --inline  --progress --hot --port 8083",
     "dev-inspector": "cross-env NODE_ENV=development webpack-dev-server --open http://localhost:8084/devInspector.html --inline --progress --hot --port 8084",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "build-new": "webpack --config ./src/webpack.config.js --hide-modules --progress"
+    "build-new": "webpack --config ./src/webpack.config.js --hide-modules --progress --watch"
   },
   "dependencies": {
     "fs": "0.0.1-security",

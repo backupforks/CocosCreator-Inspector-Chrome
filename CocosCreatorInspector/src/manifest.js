@@ -4,11 +4,11 @@ module.exports = {
   description: "Cocos Creator Inspector",
   browser_action: {
     default_title: "CC-Inspector",
-    default_icon: "static/images/icon48.png",
+    default_icon: "icon/icon48.png",
     default_popup: "pages/popup.html"
   },
   icons: {
-    48: "static/images/icon48.png"
+    48: "icon/icon48.png"
   },
   devtools_page: "pages/devtools.html",
   content_scripts: [
