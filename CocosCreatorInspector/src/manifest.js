@@ -13,13 +13,10 @@ module.exports = {
   devtools_page: "pages/devtools.html",
   content_scripts: [
     {
-      matches: [
-        "<all_urls>"
-      ],
-      js: [
-        "js/content.js"
-      ],
-      run_at: "document_end"
+      matches: ["<all_urls>"],
+      js: ["js/content.js"],
+      run_at: "document_end",
+      all_frames: true
     }
   ],
   background: {

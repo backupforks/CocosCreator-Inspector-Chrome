@@ -40,3 +40,6 @@ QQ群**224756137**
 ### manifest.json
 // 开发参考：http://open.chrome.360.cn/extension_dev/overview.html
 // 字段说明参考：http://open.chrome.360.cn/extension_dev/manifest.html
+
+## 配合使用插件
+[extensions-reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid?utm_source=chrome-ntp-icon)

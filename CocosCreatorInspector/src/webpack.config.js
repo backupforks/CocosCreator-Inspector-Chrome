@@ -31,6 +31,7 @@ module.exports = {
   entry: {
     popup: resolve("popup"),
     devtools: resolve("devtools"),
+    dev_panel:resolve("devtools/dev_panel"),
     background: resolve("background"),
     options: resolve('options'),
     content: resolve("content"),
@@ -60,6 +61,7 @@ module.exports = {
 
     htmlPage("popup", 'popup', ['popup']),
     htmlPage("devtools", 'devtools', ['devtools']),
+    htmlPage("dev_panel", 'dev_panel', ['dev_panel']),
     htmlPage("options", 'options', ['options']),
     htmlPage('background', 'background', ['background']),
     new ChromeManifest({
