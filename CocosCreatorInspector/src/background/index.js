@@ -1,6 +1,5 @@
 function shortConnectionLink(request, sender, sendResponse) {
   console.log(`%c[短连接|id:${sender.id}|url:${sender.url}]\n${JSON.stringify(request)}`, 'background:#aaa;color:#BD4E19')
-  console.log(request);
   sendResponse && sendResponse(request);
 }
 

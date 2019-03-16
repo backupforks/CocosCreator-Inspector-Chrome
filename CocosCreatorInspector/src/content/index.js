@@ -1,14 +1,20 @@
 // 具有操作dom的能力
 // 加载其他脚本
-// var content = chrome.extension.getURL('js/inject.js')
-// var script = document.createElement('script')
-// script.setAttribute('type', 'text/javascript')
-// script.setAttribute('src', content)
-// script.onload = function () {
-//   // 注入脚本执行完后移除掉
-//   this.parentNode.removeChild(this);
-// }
-// document.body.appendChild(script)
+
+function injectScriptToPage(url) {
+  let content = chrome.extension.getURL(url)
+  console.log(`[cc-inspector]注入脚本:${content}`);
+  let script = document.createElement('script')
+  script.setAttribute('type', 'text/javascript')
+  script.setAttribute('src', content)
+  script.onload = function () {
+    // 注入脚本执行完后移除掉
+    this.parentNode.removeChild(this);
+  }
+  document.body.appendChild(script)
+}
+
+injectScriptToPage("js/inject.js");
 
 
 window.addEventListener('message', function (event) {
@@ -28,7 +34,6 @@ if (gameCanvas) {
 } else {
   // console.log("can't find GameCanvas element");
   chrome.runtime.sendMessage({type: 0, msg: "no creator game!"}, function (data) {
-    debugger
     console.log(data)
   });
 }

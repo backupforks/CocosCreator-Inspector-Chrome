@@ -43,27 +43,25 @@
       }
     },
     created() {
-      debugger
-      let backgroundPageConnection = chrome.runtime.connect({
-        name: btoa("for" + String(chrome.devtools.inspectedWindow.tabId))
-      });
-      backgroundPageConnection.onMessage.addListener(function (message) {
-        if (message !== null) {
+      // chrome.devtools.inspectedWindow.tabId
+      let conn = chrome.runtime.connect({name: "devtools"});
+      conn.onMessage.addListener(function (data, sender) {
+        if (data !== null) {
           let msgType = {
             nodeInfo: 2,//节点信息
             nodeListInfo: 1,// 节点列表信息
             notSupport: 0,// 不支持的游戏
           };
-          if (message.type === msgType.nodeListInfo) {// 游戏节点
+          if (data.type === msgType.nodeListInfo) {// 游戏节点
             this.isShowDebug = true;
             // let str = JSON.stringify(message.msg);
             // console.log("onMessage: " + str);
-            this._updateView(message.msg);
-          } else if (message.type === msgType.notSupport) {// 不支持调试
+            this._updateView(data.msg);
+          } else if (data.type === msgType.notSupport) {// 不支持调试
             this.isShowDebug = false;
-          } else if (message.type === msgType.nodeInfo) {
+          } else if (data.type === msgType.nodeInfo) {
             this.isShowDebug = true;
-            this.treeItemData = message.msg;
+            this.treeItemData = data.msg;
           }
         }
       }.bind(this));
@@ -178,6 +176,10 @@
 
       onBtnClickUpdatePage() {
         debugger
+
+        let injectCode =`console.log(window.ccinspector);window.ccinspector.stop=!window.ccinspector.stop;`;
+        chrome.devtools.inspectedWindow.eval(injectCode);
+        return;
         let code = this._getInjectScriptString();
         chrome.devtools.inspectedWindow.eval(code, function () {
           console.log("刷新成功!");

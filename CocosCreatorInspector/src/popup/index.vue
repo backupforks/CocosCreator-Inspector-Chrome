@@ -67,10 +67,13 @@
         if (!this.longConn) {
           console.log("[popup] 初始化长连接");
           this.longConn = chrome.runtime.connect({name: "popup"});
-          this.longConn.onMessage.addListener(function (data, info) {
-            debugger
-          })
+          this.longConn.onMessage.addListener(function (data, sender) {
+            this._onLongConnMsg(data, sender);
+          }.bind(this))
         }
+      },
+      _onLongConnMsg(data, sender) {
+        console.log(this.title);
       },
       onMsgToBg() {
         // 因为webpack的原因,这种方式可能拿不到里面的function, var
@@ -82,7 +85,6 @@
         });
       },
       onSendMsg() {
-        debugger
         if (this.longConn) {
           this.longConn.postMessage({send: "hello"});
         }

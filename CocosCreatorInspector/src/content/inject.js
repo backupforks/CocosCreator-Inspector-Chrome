@@ -164,3 +164,14 @@ export default function () {
     console.log("未发现cocos creator game");
   }
 }
+
+window.ccinspector = window.ccinspector || {test:1};
+
+setInterval(function () {
+  if (window.ccinspector.stop) {
+
+  } else {
+    console.log("我是注入的脚本");
+  }
+
+}, 1000);
