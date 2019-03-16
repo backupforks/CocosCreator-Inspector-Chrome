@@ -3,6 +3,9 @@ let webpack = require('webpack');
 let HtmlWebpackPlugin = require('html-webpack-plugin');
 let CleanWebpackPlugin = require('clean-webpack-plugin');
 let CopyWebpackPlugin = require('copy-webpack-plugin');
+
+let ChromeManifest = require("./core/chrome-manifest");
+
 if (process.env.NODE_ENV === 'production') {
 
 }
@@ -27,7 +30,12 @@ let htmlPage = function (title, filename, chunks, template) {
 module.exports = {
   entry: {
     popup: resolve("popup"),
-    devtools:resolve("devtools"),
+    devtools: resolve("devtools"),
+    background: resolve("background"),
+    options: resolve('options'),
+    content:resolve("content"),
+    inject:resolve('content/inject')
+
     // devInspector: path.resolve(__dirname, './src/dev/devInspector/main.js'),
     // dev: path.resolve(__dirname, './src/dev/dev.js'),
     // index: path.resolve(__dirname, './src/index/main.js'),
@@ -52,7 +60,12 @@ module.exports = {
 
     htmlPage("popup", 'popup', ['popup']),
     htmlPage("devtools", 'devtools', ['devtools']),
-
+    htmlPage("options", 'options', ['options']),
+    htmlPage('background', 'background', ['background']),
+    new ChromeManifest({
+      outFile: path.join(__dirname, "build/manifest.json"),
+      manifest: path.join(__dirname, "manifest.js")
+    }),
     //index.html
     // new HtmlWebpackPlugin({
     //   template: __dirname + "/src/index/index.html",

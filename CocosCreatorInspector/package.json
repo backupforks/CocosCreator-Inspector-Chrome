@@ -11,14 +11,14 @@
     "dev-popup": "cross-env NODE_ENV=development webpack-dev-server --open http://localhost:8083/popup.html --inline  --progress --hot --port 8083",
     "dev-inspector": "cross-env NODE_ENV=development webpack-dev-server --open http://localhost:8084/devInspector.html --inline --progress --hot --port 8084",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-
-    "build2": "webpack --config ./src/webpack.config.js --progress"
+    "build-new": "webpack --config ./src/webpack.config.js --hide-modules --progress"
   },
   "dependencies": {
     "fs": "0.0.1-security",
     "fs-extra": "^5.0.0",
     "gulp": "^3.9.1",
     "gulp-shell": "^0.6.5",
+    "json-beautifully": "^1.0.3",
     "node-sass": "^4.7.2",
     "path": "^0.12.7",
     "sass-loader": "^6.0.6",
