@@ -1,32 +1,10 @@
-// 检查游戏是否为cocos游戏
-// var cc={};
-// if (typeof cc === "undefined") {
-//   console.log("该html不是cocos游戏,无法调试!");
-//   chrome.devtools.panels.elements.createSidebarPane("Creator Properties", function (sidebar) {
-//     // console.log("[Cocos Creator Inspector] CreateSidebarPane");
-//     // sidebar.setObject({ some_data: "Some data to show" });
-//     sidebar.setPage("devNoGame.html");
-//   });
-//   chrome.devtools.panels.create(
-//     "Cocos",
-//     "static/images/icon48.png",
-//     "devNoGame.html", function (panel) {
-//       // console.log("[Cocos Creator Inspector] Dev Panel Created!");
-//     });
-//
-// } else {
-//
-// }
-
-
-// chrome.devtools.panels.elements.createSidebarPane('My SliderBar', function (sidebar) {
-//   sidebar.setObject({some_data: "some data to show!"});
-// });
-
-chrome.devtools.panels.create("Cocos", "icon/icon48.png", "pages/devtools_panel.html",
-  function (panel) {
-    console.log("[Cocos Creator Inspector] Dev Panel Created!");
-
+// 对应的是Elements面板的边栏
+chrome.devtools.panels.elements.createSidebarPane('Cocos', function (sidebar) {
+  sidebar.setObject({some_data: "some data to show!"});
+});
+// 创建devtools-panel
+chrome.devtools.panels.create("Cocos", "icon/icon48.png", "pages/devtools_panel.html", function (panel) {
+    console.log("[CC-Inspector] Dev Panel Created!");
     panel.onShown.addListener(function (window) {
       console.log("panel show");
     });

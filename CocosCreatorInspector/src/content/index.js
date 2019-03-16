@@ -11,7 +11,6 @@
 // document.body.appendChild(script)
 
 
-
 window.addEventListener('message', function (event) {
   let data = event.data;
   // console.log("[contentScripts] " + JSON.stringify(data));
@@ -28,5 +27,8 @@ if (gameCanvas) {
   // gameCanvas.style.display = 'none';
 } else {
   // console.log("can't find GameCanvas element");
-  chrome.runtime.sendMessage({type: 0, msg: "no creator game!"});
+  chrome.runtime.sendMessage({type: 0, msg: "no creator game!"}, function (data) {
+    debugger
+    console.log(data)
+  });
 }

@@ -5,6 +5,7 @@
       <div style="flex: 1"></div>
       <el-button size="mini" @click="onClickOptions">设置</el-button>
       <el-button size="mini" @click="onMsgToBg">To-Bg</el-button>
+      <el-button size="mini" @click="onSendMsg">Msg</el-button>
     </div>
     <div style="text-align: center;width: 100%; color: #6d6d6d;">
       <span>支持作者</span>
@@ -52,6 +53,9 @@
         isShowMoneyPng: true,
       }
     },
+    created() {
+      this._initLongConn();
+    },
     methods: {
       onBtnClickGitHub() {
         console.log("onBtnClickGitHub");
@@ -59,13 +63,30 @@
       onClickOptions() {
         chrome.tabs.create({url: 'pages/options.html'})
       },
-      onMsgToBg(){
-        debugger
-        let bg = chrome.extension.getBackgroundPage();
-        if(bg){
-          bg.test();
+      _initLongConn() {
+        if (!this.longConn) {
+          console.log("[popup] 初始化长连接");
+          this.longConn = chrome.runtime.connect({name: "popup"});
+          this.longConn.onMessage.addListener(function (data, info) {
+            debugger
+          })
         }
-      }
+      },
+      onMsgToBg() {
+        // 因为webpack的原因,这种方式可能拿不到里面的function, var
+        // chrome.extension.getBackgroundPage();
+
+        // 发送消息到background.js
+        chrome.runtime.sendMessage('content msg', function (data) {
+          console.log(data);
+        });
+      },
+      onSendMsg() {
+        debugger
+        if (this.longConn) {
+          this.longConn.postMessage({send: "hello"});
+        }
+      },
     },
   }
 </script>

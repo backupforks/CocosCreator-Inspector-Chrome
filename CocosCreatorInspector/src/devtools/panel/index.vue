@@ -43,14 +43,8 @@
       }
     },
     created() {
-      if (chrome && chrome.extension) {
-
-      } else {
-        this.isShowDebug = true;
-        this.onTestData();
-        return;
-      }
-      let backgroundPageConnection = chrome.extension.connect({
+      debugger
+      let backgroundPageConnection = chrome.runtime.connect({
         name: btoa("for" + String(chrome.devtools.inspectedWindow.tabId))
       });
       backgroundPageConnection.onMessage.addListener(function (message) {
@@ -183,6 +177,7 @@
       },
 
       onBtnClickUpdatePage() {
+        debugger
         let code = this._getInjectScriptString();
         chrome.devtools.inspectedWindow.eval(code, function () {
           console.log("刷新成功!");

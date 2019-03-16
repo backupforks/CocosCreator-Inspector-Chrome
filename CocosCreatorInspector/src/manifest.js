@@ -20,9 +20,8 @@ module.exports = {
     }
   ],
   background: {
-    scripts: [
-      "js/background.js"
-    ]
+    scripts: ["js/background.js"],
+    persistent: false,// 需要时开启
   },
   options_page: "pages/options.html",
   manifest_version: 2,
