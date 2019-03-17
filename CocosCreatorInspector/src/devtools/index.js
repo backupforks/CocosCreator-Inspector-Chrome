@@ -18,12 +18,3 @@ chrome.devtools.panels.create("Cocos", "icon/icon48.png", "pages/devtools_panel.
   }
 );
 
-// (function () {
-//   var t = window.setInterval(function () {
-//      egret && egret.devtool &&
-//       egret.devtool.start &&
-//       (window.clearInterval(t) || egret.devtool.start());
-//     console.log("waiting")
-//   }, 100);
-//   egret && egret.devtool && egret.devtool.start && (window.clearInterval(t) || egret.devtool.start());
-// })();

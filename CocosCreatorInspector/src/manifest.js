@@ -23,7 +23,14 @@ module.exports = {
     scripts: ["js/background.js"],
     persistent: false,// 需要时开启
   },
+  // optionsV1的写法
   options_page: "pages/options.html",
+  // optionsV2的写法
+  options_ui: {
+    page: "pages/options.html",
+    // 添加一些默认的样式，推荐使用
+    chrome_style: true,
+  },
   manifest_version: 2,
   permissions: [
     "tabs",
@@ -33,7 +40,9 @@ module.exports = {
     "system.cpu",
     "tabs",
     "storage",
-    "nativeMessaging"
+    "nativeMessaging",
+    "contextMenus",
+    "notifications",
   ],
   web_accessible_resources: ["*/*", "*"],
   content_security_policy: "script-src 'self' 'unsafe-eval';  object-src 'self'"

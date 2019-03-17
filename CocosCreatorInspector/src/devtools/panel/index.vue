@@ -1,8 +1,9 @@
 <template>
   <div id="app">
     <el-button type="success" class="el-icon-refresh" size="mini" @click="onBtnClickUpdatePage">刷新</el-button>
-    <!--<el-button type="success" size="mini" @click="onTestData">测试</el-button>-->
-    <!--<el-button type="success" size="mini" @click="onBtnClickTest">test</el-button>-->
+    <el-button type="success" size="mini" @click="onBtnClickTest1">Test1</el-button>
+    <el-button type="success" size="mini" @click="onBtnClickTest2">Test2</el-button>
+    <el-button type="success" size="mini" @click="onBtnClickTest3">Test3</el-button>
     <div v-show="isShowDebug">
       <el-row>
         <el-col :span="8">
@@ -46,6 +47,7 @@
       // chrome.devtools.inspectedWindow.tabId
       let conn = chrome.runtime.connect({name: "devtools"});
       conn.onMessage.addListener(function (data, sender) {
+        debugger
         if (data !== null) {
           let msgType = {
             nodeInfo: 2,//节点信息
@@ -177,14 +179,27 @@
       onBtnClickUpdatePage() {
         debugger
 
-        let injectCode =`console.log(window.ccinspector);window.ccinspector.stop=!window.ccinspector.stop;`;
+        let injectCode = `console.log(window.ccinspector);window.ccinspector.stop=!window.ccinspector.stop;`;
         chrome.devtools.inspectedWindow.eval(injectCode);
         return;
         let code = this._getInjectScriptString();
         chrome.devtools.inspectedWindow.eval(code, function () {
           console.log("刷新成功!");
         });
+
+
       },
+      onBtnClickTest1() {
+        chrome.devtools.inspectedWindow.eval(`window.ccinspector.testMsg1()`)
+      },
+      onBtnClickTest2() {
+        chrome.devtools.inspectedWindow.eval(`window.ccinspector.testMsg2()`)
+      },
+      onBtnClickTest3() {
+        // chrome.devtools.inspectedWindow.eval(`window.ccinspector.testMsg3()`)
+        let f = require("../../core/event-mgr");
+        console.log(f.id);
+      }
     }
   }
 </script>

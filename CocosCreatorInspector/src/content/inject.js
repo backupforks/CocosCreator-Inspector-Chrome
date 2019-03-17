@@ -165,7 +165,7 @@ export default function () {
   }
 }
 
-window.ccinspector = window.ccinspector || {test:1};
+window.ccinspector = window.ccinspector || {test: 1};
 
 setInterval(function () {
   if (window.ccinspector.stop) {
@@ -175,3 +175,14 @@ setInterval(function () {
   }
 
 }, 1000);
+window.ccinspector.testMsg1 = function () {
+  window.postMessage("testMsg1")
+}
+window.ccinspector.testMsg2 = function () {
+  debugger
+  chrome.runtime.connect({name: "inject"});
+}
+window.ccinspector.testMsg3=function () {
+  debugger
+  chrome.runtime.sendMessage("ffff");
+}
