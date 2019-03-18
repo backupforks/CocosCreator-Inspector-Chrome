@@ -16,12 +16,15 @@ let cc_inspector = {
   },
   init() {
     setInterval(function () {
-      // this.checkIsGamePage(false);
+      this.checkIsGamePage(true);
       // if (this.stop) {
       // } else {
       // }
     }.bind(this), 1000);
+    // 注册cc_after_render事件
 
+  },
+  updateTreeInfo() {
     let isCocosCreatorGame = this.checkIsGamePage(true);
     if (isCocosCreatorGame) {
       let scene = cc.director.getScene();
@@ -39,32 +42,28 @@ let cc_inspector = {
           this.getNodeChildren(node, this.postData.scene.children);
         }
         // console.log(postData);
-        this.sendMsgToDevTools(PluginMsg.Msg.ListInfo, {data: this.postData});
+        this.sendMsgToDevTools(PluginMsg.Msg.ListInfo, this.postData);
       } else {
         this.postData.scene = null;
         this.sendMsgToDevTools(PluginMsg.Msg.Support, {support: false, msg: "未发现游戏场景,不支持调试游戏!"});
       }
-    } else {
-      console.log("未发现cocos creator game");
     }
   },
   checkIsGamePage(isLog) {
-    debugger
     // 检测是否包含cc变量
     let isCocosCreatorGame = true;
+    let msg = "支持调试游戏!";
     try {
       cc
     } catch (e) {
       isCocosCreatorGame = false;
-      this.sendMsgToDevTools(PluginMsg.Msg.Support, {support: false, msg: "不支持调试游戏!",log:isLog});
+      msg = "不支持调试游戏!";
     }
+    this.sendMsgToDevTools(PluginMsg.Msg.Support, {support: isCocosCreatorGame, msg: msg, log: isLog});
     return isCocosCreatorGame;
   },
   testEval() {
     console.log("hello devtools eval")
-  },
-  testMsg1() {
-    window.postMessage("testMsg1")
   },
   testMsg2() {
     debugger
@@ -80,7 +79,7 @@ let cc_inspector = {
     let nodeComp = node._components;
     for (let i = 0; i < nodeComp.length; i++) {
       let itemComp = nodeComp[i];
-      window.inspectorGameMemoryStorage[itemComp.uuid] = itemComp;
+      this.inspectorGameMemoryStorage[itemComp.uuid] = itemComp;
       ret.push({
         uuid: itemComp.uuid,
         type: itemComp.constructor.name,
@@ -129,9 +128,9 @@ let cc_inspector = {
   },
   // 获取节点信息
   getNodeInfo(uuid) {
-    let node = window.inspectorGameMemoryStorage[uuid];
+    let node = this.inspectorGameMemoryStorage[uuid];
     if (node) {
-      let nodeComp = getNodeComponentsInfo(node);
+      let nodeComp = this.getNodeComponentsInfo(node);
       let nodeData = {
         type: node.constructor.name,
         uuid: node.uuid,
@@ -162,7 +161,7 @@ let cc_inspector = {
       } else {
         nodeData.active = node.active;
       }
-      window.sendMsgToDevTools(msgType.nodeInfo, nodeData);
+      this.sendMsgToDevTools(PluginMsg.Msg.NodeInfo, nodeData);
     } else {
       // 未获取到节点数据
       console.log("未获取到节点数据");
@@ -177,12 +176,12 @@ let cc_inspector = {
       name: node.name,
       children: [],
     };
-    window.inspectorGameMemoryStorage[node.uuid] = node;
+    this.inspectorGameMemoryStorage[node.uuid] = node;
     let nodeChildren = node.getChildren();
     for (let i = 0; i < nodeChildren.length; i++) {
       let childItem = nodeChildren[i];
       // console.log("childName: " + childItem.name);
-      getNodeChildren(childItem, nodeData.children);
+      this.getNodeChildren(childItem, nodeData.children);
     }
     data.push(nodeData);
   },

@@ -28,8 +28,8 @@ conn.onMessage.addListener(function (data) {
 window.addEventListener('message', function (event) {
   let data = event.data;
   if (data.data.log) {
-    console.log(`%c[content] ${JSON.stringify(data)}`, "color:#BD4E19");
   }
+  console.log(`%c[content] ${JSON.stringify(data)}`, "color:#BD4E19");
   chrome.runtime.sendMessage(data);
 }, false);
 

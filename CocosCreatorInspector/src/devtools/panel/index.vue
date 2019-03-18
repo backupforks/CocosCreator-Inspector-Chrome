@@ -1,14 +1,17 @@
 <template>
   <div style="display: flex;width: 100%; height: 100%;flex-direction: column">
-    <div v-show="isShowDebug">
+    <div v-show="isShowDebug" style="display: flex;flex: 1; flex-direction: column;">
       <div>
-        <el-button type="success" class="el-icon-refresh" size="mini" @click="onBtnClickUpdatePage">刷新</el-button>
         <el-button type="success" size="mini" @click="onBtnClickTest1">Test1</el-button>
         <el-button type="success" size="mini" @click="onBtnClickTest2">Test2</el-button>
         <el-button type="success" size="mini" @click="onBtnClickTest3">Test3</el-button>
       </div>
-      <el-row>
+      <el-row style="display:flex; flex: 1;">
         <el-col :span="8">
+          <div>
+            <el-switch active-text="实时监控" v-model="watchEveryTime"></el-switch>
+            <el-button type="success" class="el-icon-refresh" size="mini" @click="onBtnClickUpdateTree">刷新</el-button>
+          </div>
           <div class="grid-content treeList">
             <el-tree :data="treeData"
                      :props="defaultProps"
@@ -48,7 +51,11 @@
         treeDataMap: {},
         bgConn: null,// 与background.js的链接
 
-        defaultProps: null,
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        },
+        watchEveryTime: false,// 实时监控节点树
       }
     },
     created() {
@@ -121,8 +128,7 @@
         // console.log(data);
         let uuid = data.uuid;
         if (uuid !== undefined) {
-          let code = "window.getNodeInfo('" + uuid + "')";
-          chrome.devtools.inspectedWindow.eval(code);
+          this.evalInspectorFunction("getNodeInfo", `"${uuid}"`);
         }
       },
       _updateView(data) {
@@ -194,13 +200,24 @@
             }else{
               console.log("可能脚本没有注入");
             }`;
-          chrome.devtools.inspectedWindow.eval(injectCode);
+          console.log(injectCode);
+          let ret = chrome.devtools.inspectedWindow.eval(injectCode, function (result, info) {
+            if (info.isException) {
+              debugger
+              console.log(info.value)
+            }
+
+          });
+          console.log(`ret:${ret}`);
         } else {
           console.log("执行失败!");
         }
       },
+      onBtnClickUpdateTree() {
+        this.evalInspectorFunction("updateTreeInfo");
+
+      },
       onBtnClickUpdatePage() {
-        debugger
         this.evalInspectorFunction("checkIsGamePage", "true");
         // let code = this._getInjectScriptString();
         // chrome.devtools.inspectedWindow.eval(code, function () {
