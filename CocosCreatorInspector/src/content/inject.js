@@ -16,13 +16,17 @@ let cc_inspector = {
   },
   init() {
     setInterval(function () {
-      this.checkIsGamePage(true);
+      // this.checkIsGamePage(true);
       // if (this.stop) {
       // } else {
       // }
     }.bind(this), 1000);
     // 注册cc_after_render事件
-
+    window.addEventListener('message', function (event) {
+      if (event.data.msg === PluginMsg.Msg.UrlChange) {
+        this.checkIsGamePage(true);
+      }
+    }.bind(this));
   },
   updateTreeInfo() {
     let isCocosCreatorGame = this.checkIsGamePage(true);
@@ -90,26 +94,26 @@ let cc_inspector = {
   },
 
   pluginSetNodeColor(uuid, colorHex) {
-    let node = window.inspectorGameMemoryStorage[uuid];
+    let node = this.inspectorGameMemoryStorage[uuid];
     if (node) {
       node.color = cc.hexToColor(colorHex);
     }
   },
   pluginSetNodeRotation(uuid, rotation) {
-    let node = window.inspectorGameMemoryStorage[uuid];
+    let node = this.inspectorGameMemoryStorage[uuid];
     if (node) {
       node.rotation = rotation;
     }
   },
   pluginSetNodePosition(uuid, x, y) {
-    let node = window.inspectorGameMemoryStorage[uuid];
+    let node = this.inspectorGameMemoryStorage[uuid];
     if (node) {
       node.x = x;
       node.y = y;
     }
   },
   pluginSetNodeSize(uuid, width, height) {
-    let node = window.inspectorGameMemoryStorage[uuid];
+    let node = this.inspectorGameMemoryStorage[uuid];
     if (node) {
       node.width = width;
       node.height = height;
@@ -117,7 +121,7 @@ let cc_inspector = {
   },
   // 设置节点是否可视
   pluginSetNodeActive(uuid, isActive) {
-    let node = window.inspectorGameMemoryStorage[uuid];
+    let node = this.inspectorGameMemoryStorage[uuid];
     if (node) {
       if (isActive === 1) {
         node.active = true;
@@ -188,6 +192,21 @@ let cc_inspector = {
   sendMsgToDevTools(msg, data) {
     window.postMessage({msg: msg, data: data}, "*");
   },
+
+  onMemoryInfo() {
+    this.sendMsgToDevTools(PluginMsg.Msg.MemoryInfo, {
+      performance: {
+        jsHeapSizeLimit: window.performance.memory.jsHeapSizeLimit,
+        totalJSHeapSize: window.performance.memory.totalJSHeapSize,
+        usedJSHeapSize: window.performance.memory.usedJSHeapSize,
+      },
+      console: {
+        jsHeapSizeLimit: console.memory.jsHeapSizeLimit,
+        totalJSHeapSize: console.memory.totalJSHeapSize,
+        usedJSHeapSize: console.memory.usedJSHeapSize,
+      },
+    });
+  }
 }
 window.ccinspector = window.ccinspector || cc_inspector;
 window.ccinspector.init && window.ccinspector.init();// 执行初始化函数

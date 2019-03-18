@@ -19,10 +19,11 @@ function injectScriptToPage(url) {
 injectScriptToPage("js/inject.js");
 
 // 和background.js保持长连接通讯
-let conn = chrome.runtime.connect({name: "connect.js"})
+let conn = chrome.runtime.connect({name: PluginMsg.Page.Content})
 // conn.postMessage('test');
 conn.onMessage.addListener(function (data) {
-  console.log(data)
+  // 将background.js的消息返回到injection.js
+  window.postMessage(data, "*");
 })
 // 接受来自inject.js的消息数据,然后中转到background.js
 window.addEventListener('message', function (event) {

@@ -4,7 +4,12 @@
       <div>
         <el-button type="success" size="mini" @click="onBtnClickTest1">Test1</el-button>
         <el-button type="success" size="mini" @click="onBtnClickTest2">Test2</el-button>
-        <el-button type="success" size="mini" @click="onBtnClickTest3">Test3</el-button>
+        <el-button type="success" size="mini" @click="onMemoryTest">内存测试</el-button>
+      </div>
+      <div>
+        <span>JS堆栈限制: {{memory.performance.jsHeapSizeLimit}}</span>
+        <span>JS堆栈大小: {{memory.performance.totalJSHeapSize}}</span>
+        <span>JS堆栈使用: {{memory.performance.usedJSHeapSize}}</span>
       </div>
       <el-row style="display:flex; flex: 1;">
         <el-col :span="8">
@@ -56,6 +61,10 @@
           label: 'label'
         },
         watchEveryTime: false,// 实时监控节点树
+        memory: {
+          performance: {},
+          console: {},
+        },
       }
     },
     created() {
@@ -76,6 +85,8 @@
         } else if (eventMsg === PluginMsg.Msg.NodeInfo) {
           this.isShowDebug = true;
           this.treeItemData = eventData;
+        } else if (eventMsg === PluginMsg.Msg.MemoryInfo) {
+          this.memory = eventData;
         }
       }.bind(this));
 
@@ -202,8 +213,7 @@
             }`;
           console.log(injectCode);
           let ret = chrome.devtools.inspectedWindow.eval(injectCode, function (result, info) {
-            if (info.isException) {
-              debugger
+            if (info && info.isException) {
               console.log(info.value)
             }
 
@@ -234,6 +244,9 @@
         // chrome.devtools.inspectedWindow.eval(`window.ccinspector.testMsg3()`)
         let f = require("../../core/event-mgr");
         console.log(f.id);
+      },
+      onMemoryTest() {
+        this.evalInspectorFunction("onMemoryInfo");
       }
     }
   }

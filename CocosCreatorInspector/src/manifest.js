@@ -37,7 +37,12 @@ module.exports = {
     "http://*/*",
     "https://*/*",
     "*://*/*",
+    "audio",
     "system.cpu",
+    "clipboardRead",
+    "clipboardWrite",
+    "system.memory",
+    "processes",// 这个权限只在chrome-dev版本都才有
     "tabs",
     "storage",
     "nativeMessaging",
