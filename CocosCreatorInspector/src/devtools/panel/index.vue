@@ -1,10 +1,12 @@
 <template>
-  <div id="app">
-    <el-button type="success" class="el-icon-refresh" size="mini" @click="onBtnClickUpdatePage">刷新</el-button>
-    <el-button type="success" size="mini" @click="onBtnClickTest1">Test1</el-button>
-    <el-button type="success" size="mini" @click="onBtnClickTest2">Test2</el-button>
-    <el-button type="success" size="mini" @click="onBtnClickTest3">Test3</el-button>
+  <div style="display: flex;width: 100%; height: 100%;flex-direction: column">
     <div v-show="isShowDebug">
+      <div>
+        <el-button type="success" class="el-icon-refresh" size="mini" @click="onBtnClickUpdatePage">刷新</el-button>
+        <el-button type="success" size="mini" @click="onBtnClickTest1">Test1</el-button>
+        <el-button type="success" size="mini" @click="onBtnClickTest2">Test2</el-button>
+        <el-button type="success" size="mini" @click="onBtnClickTest3">Test3</el-button>
+      </div>
       <el-row>
         <el-col :span="8">
           <div class="grid-content treeList">
@@ -23,48 +25,50 @@
         </el-col>
       </el-row>
     </div>
-    <div v-show="!isShowDebug">
-      未发现cocos creator的游戏!
+    <div v-show="!isShowDebug" style="display: flex; flex: 1;" class="center-center horizontal">
+      <span style="margin-right: 20px;">未发现cocos creator的游戏!</span>
+      <el-button type="success" class="el-icon-refresh" size="mini" @click="onBtnClickUpdatePage">刷新</el-button>
     </div>
   </div>
 </template>
 
 <script>
   // import injectScript from '../injectScript.js'
+  // import EvalCode from "./evalCodeString.js";
+
   let injectScript = "";
+  const PluginMsg = require("../../core/plugin-msg");
 
   export default {
-    name: "app",
     data() {
       return {
         isShowDebug: false,
         treeItemData: {},
         treeData: [],
         treeDataMap: {},
+        bgConn: null,// 与background.js的链接
+
+        defaultProps: null,
       }
     },
     created() {
       // chrome.devtools.inspectedWindow.tabId
-      let conn = chrome.runtime.connect({name: "devtools"});
-      conn.onMessage.addListener(function (data, sender) {
-        debugger
-        if (data !== null) {
-          let msgType = {
-            nodeInfo: 2,//节点信息
-            nodeListInfo: 1,// 节点列表信息
-            notSupport: 0,// 不支持的游戏
-          };
-          if (data.type === msgType.nodeListInfo) {// 游戏节点
-            this.isShowDebug = true;
-            // let str = JSON.stringify(message.msg);
-            // console.log("onMessage: " + str);
-            this._updateView(data.msg);
-          } else if (data.type === msgType.notSupport) {// 不支持调试
-            this.isShowDebug = false;
-          } else if (data.type === msgType.nodeInfo) {
-            this.isShowDebug = true;
-            this.treeItemData = data.msg;
-          }
+      // 接收来自background.js的消息数据
+      this.bgConn = chrome.runtime.connect({name: PluginMsg.Page.Devtools});
+      this.bgConn.onMessage.addListener(function (data, sender) {
+        if (!data) {
+          return;
+        }
+        let eventData = data.data;
+        let eventMsg = data.msg;
+        if (eventMsg === PluginMsg.Msg.ListInfo) {
+          this.isShowDebug = true;
+          this._updateView(eventData);
+        } else if (eventMsg === PluginMsg.Msg.Support) {
+          this.isShowDebug = eventData.support;
+        } else if (eventMsg === PluginMsg.Msg.NodeInfo) {
+          this.isShowDebug = true;
+          this.treeItemData = eventData;
         }
       }.bind(this));
 
@@ -176,18 +180,32 @@
         return evalCode;
       },
 
+      evalInspectorFunction(funcString, parm) {
+        if (funcString || funcString.length > 0) {
+          let injectCode =
+            `if(window.ccinspector){
+              let func = window.ccinspector.${funcString};
+              if(func){
+                console.log("执行${funcString}成功");
+                func.apply(window.ccinspector,[${parm}]);
+              }else{
+                console.log("未发现${funcString}函数");
+              }
+            }else{
+              console.log("可能脚本没有注入");
+            }`;
+          chrome.devtools.inspectedWindow.eval(injectCode);
+        } else {
+          console.log("执行失败!");
+        }
+      },
       onBtnClickUpdatePage() {
         debugger
-
-        let injectCode = `console.log(window.ccinspector);window.ccinspector.stop=!window.ccinspector.stop;`;
-        chrome.devtools.inspectedWindow.eval(injectCode);
-        return;
-        let code = this._getInjectScriptString();
-        chrome.devtools.inspectedWindow.eval(code, function () {
-          console.log("刷新成功!");
-        });
-
-
+        this.evalInspectorFunction("checkIsGamePage", "true");
+        // let code = this._getInjectScriptString();
+        // chrome.devtools.inspectedWindow.eval(code, function () {
+        //   console.log("刷新成功!");
+        // });
       },
       onBtnClickTest1() {
         chrome.devtools.inspectedWindow.eval(`window.ccinspector.testMsg1()`)
@@ -228,5 +246,23 @@
 
   body span h1 h2 h3 {
     font-family: BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, 'SourceHanSansCN-Normal', Arial, sans-serif
+  }
+
+  .layout {
+    display: block;
+  }
+
+  .horizontal {
+    flex-direction: row;
+  }
+
+  .vertical {
+    flex-direction: column;
+  }
+
+  .center-center {
+    align-content: center;
+    align-items: center;
+    justify-content: center;
   }
 </style>

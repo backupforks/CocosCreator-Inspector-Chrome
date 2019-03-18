@@ -1,6 +1,19 @@
+let PluginMsg = require("../core/plugin-msg");
+// 链接池子
+let ConnPool = {
+  Devtools: null,
+
+};
+
 function shortConnectionLink(request, sender, sendResponse) {
   console.log(`%c[短连接|id:${sender.id}|url:${sender.url}]\n${JSON.stringify(request)}`, 'background:#aaa;color:#BD4E19')
   sendResponse && sendResponse(request);
+  if (request.msg === PluginMsg.Msg.Support ||
+    request.msg === PluginMsg.Msg.ListInfo ||
+    request.msg === PluginMsg.Msg.NodeInfo) {
+    // 将消息转发到devtools
+    ConnPool.Devtools && ConnPool.Devtools.postMessage(request);
+  }
 }
 
 function longConnectionLink(data, sender) {
@@ -14,11 +27,18 @@ function longConnectionLink(data, sender) {
 chrome.runtime.onConnect.addListener(function (port) {
   console.log(`%c[长连接:${port.name}] 建立链接!`, 'background:#aaa;color:#ff0000');
   port.onMessage.addListener(longConnectionLink);
-  port.postMessage("ok");
   port.onDisconnect.addListener(function (port) {
     console.log(`%c[长连接:${port.name}] 断开链接!`, 'background:#aaa;color:#00ff00');
     port.onMessage.removeListener(longConnectionLink);
+    if (port.name === PluginMsg.Page.Devtools) {
+      ConnPool.Devtools = null;
+    }
   });
+
+  // 缓存
+  if (port.name === PluginMsg.Page.Devtools) {
+    ConnPool.Devtools = port;
+  }
 });
 
 // background.js 更像是一个主进程,负责整个插件的调度,生命周期和chrome保持一致

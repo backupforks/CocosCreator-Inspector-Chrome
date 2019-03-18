@@ -1,20 +1,81 @@
 // eval 注入脚本的代码,变量尽量使用var,后来发现在import之后,let会自动变为var
-export default function () {
-  let msgType = {
+const PluginMsg = require("../core/plugin-msg");
+
+let cc_inspector = {
+  inspectorGameMemoryStorage: {},
+  msgType: {
     nodeInfo: 2,//节点信息
     nodeListInfo: 1,// 节点列表信息
     notSupport: 0,// 不支持的游戏
-  };
-  let postData = {
+  },
+  postData: {
     scene: {
       name: "",
       children: []
     },
-  };
-  window.inspectorGameMemoryStorage = window.inspectorGameMemoryStorage || {};
+  },
+  init() {
+    setInterval(function () {
+      // this.checkIsGamePage(false);
+      // if (this.stop) {
+      // } else {
+      // }
+    }.bind(this), 1000);
 
+    let isCocosCreatorGame = this.checkIsGamePage(true);
+    if (isCocosCreatorGame) {
+      let scene = cc.director.getScene();
+      if (scene) {
+        this.postData.scene = {
+          type: 1,// 标识类型
+          uuid: scene.uuid,
+          name: scene.name,
+          children: [],
+        };
+        this.inspectorGameMemoryStorage[scene.uuid] = scene;
+        let sceneChildren = scene.getChildren();
+        for (let i = 0; i < sceneChildren.length; i++) {
+          let node = sceneChildren[i];
+          this.getNodeChildren(node, this.postData.scene.children);
+        }
+        // console.log(postData);
+        this.sendMsgToDevTools(PluginMsg.Msg.ListInfo, {data: this.postData});
+      } else {
+        this.postData.scene = null;
+        this.sendMsgToDevTools(PluginMsg.Msg.Support, {support: false, msg: "未发现游戏场景,不支持调试游戏!"});
+      }
+    } else {
+      console.log("未发现cocos creator game");
+    }
+  },
+  checkIsGamePage(isLog) {
+    debugger
+    // 检测是否包含cc变量
+    let isCocosCreatorGame = true;
+    try {
+      cc
+    } catch (e) {
+      isCocosCreatorGame = false;
+      this.sendMsgToDevTools(PluginMsg.Msg.Support, {support: false, msg: "不支持调试游戏!",log:isLog});
+    }
+    return isCocosCreatorGame;
+  },
+  testEval() {
+    console.log("hello devtools eval")
+  },
+  testMsg1() {
+    window.postMessage("testMsg1")
+  },
+  testMsg2() {
+    debugger
+    chrome.runtime.connect({name: "inject"});
+  },
+  testMsg3() {
+    debugger
+    chrome.runtime.sendMessage("ffff");
+  },
   // 收集组件信息
-  function getNodeComponentsInfo(node) {
+  getNodeComponentsInfo(node) {
     let ret = [];
     let nodeComp = node._components;
     for (let i = 0; i < nodeComp.length; i++) {
@@ -27,36 +88,36 @@ export default function () {
       });
     }
     return ret;
-  }
+  },
 
-  window.pluginSetNodeColor = function (uuid, colorHex) {
+  pluginSetNodeColor(uuid, colorHex) {
     let node = window.inspectorGameMemoryStorage[uuid];
     if (node) {
       node.color = cc.hexToColor(colorHex);
     }
-  };
-  window.pluginSetNodeRotation = function (uuid, rotation) {
+  },
+  pluginSetNodeRotation(uuid, rotation) {
     let node = window.inspectorGameMemoryStorage[uuid];
     if (node) {
       node.rotation = rotation;
     }
-  };
-  window.pluginSetNodePosition = function (uuid, x, y) {
+  },
+  pluginSetNodePosition(uuid, x, y) {
     let node = window.inspectorGameMemoryStorage[uuid];
     if (node) {
       node.x = x;
       node.y = y;
     }
-  };
-  window.pluginSetNodeSize = function (uuid, width, height) {
+  },
+  pluginSetNodeSize(uuid, width, height) {
     let node = window.inspectorGameMemoryStorage[uuid];
     if (node) {
       node.width = width;
       node.height = height;
     }
-  };
+  },
   // 设置节点是否可视
-  window.pluginSetNodeActive = function (uuid, isActive) {
+  pluginSetNodeActive(uuid, isActive) {
     let node = window.inspectorGameMemoryStorage[uuid];
     if (node) {
       if (isActive === 1) {
@@ -65,9 +126,9 @@ export default function () {
         node.active = false;
       }
     }
-  };
+  },
   // 获取节点信息
-  window.getNodeInfo = function (uuid) {
+  getNodeInfo(uuid) {
     let node = window.inspectorGameMemoryStorage[uuid];
     if (node) {
       let nodeComp = getNodeComponentsInfo(node);
@@ -106,10 +167,10 @@ export default function () {
       // 未获取到节点数据
       console.log("未获取到节点数据");
     }
-  };
+  },
 
   // 收集节点信息
-  function getNodeChildren(node, data) {
+  getNodeChildren(node, data) {
     // console.log("nodeName: " + node.name);
     let nodeData = {
       uuid: node.uuid,
@@ -124,65 +185,14 @@ export default function () {
       getNodeChildren(childItem, nodeData.children);
     }
     data.push(nodeData);
-  }
-
-  window.sendMsgToDevTools = function (type, msg) {
-    window.postMessage({type: type, msg: msg}, "*");
-  };
-  // 检测是否包含cc变量
-  let isCocosCreatorGame = true;
-  try {
-    let cocosInspectorTestVar = cc;
-  } catch (e) {
-    isCocosCreatorGame = false;
-    window.sendMsgToDevTools(msgType.notSupport, "不支持调试游戏!");
-  }
-
-  if (isCocosCreatorGame) {
-    let scene = cc.director.getScene();
-    if (scene) {
-      postData.scene = {
-        type: 1,// 标识类型
-        uuid: scene.uuid,
-        name: scene.name,
-        children: [],
-      };
-      window.inspectorGameMemoryStorage[scene.uuid] = scene;
-
-      let sceneChildren = scene.getChildren();
-      for (let i = 0; i < sceneChildren.length; i++) {
-        let node = sceneChildren[i];
-        getNodeChildren(node, postData.scene.children);
-      }
-      // console.log(postData);
-      window.sendMsgToDevTools(msgType.nodeListInfo, postData);
-    } else {
-      postData.scene = null;
-      window.sendMsgToDevTools(msgType.notSupport, "不支持调试游戏!");
-    }
-  } else {
-    console.log("未发现cocos creator game");
-  }
+  },
+  sendMsgToDevTools(msg, data) {
+    window.postMessage({msg: msg, data: data}, "*");
+  },
 }
+window.ccinspector = window.ccinspector || cc_inspector;
+window.ccinspector.init && window.ccinspector.init();// 执行初始化函数
 
-window.ccinspector = window.ccinspector || {test: 1};
 
-setInterval(function () {
-  if (window.ccinspector.stop) {
 
-  } else {
-    console.log("我是注入的脚本");
-  }
 
-}, 1000);
-window.ccinspector.testMsg1 = function () {
-  window.postMessage("testMsg1")
-}
-window.ccinspector.testMsg2 = function () {
-  debugger
-  chrome.runtime.connect({name: "inject"});
-}
-window.ccinspector.testMsg3=function () {
-  debugger
-  chrome.runtime.sendMessage("ffff");
-}
