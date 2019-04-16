@@ -12,15 +12,18 @@
         <span>JS堆栈使用: {{memory.performance.usedJSHeapSize}}</span>
       </div>
       <el-row style="display:flex; flex: 1;">
-        <el-col :span="8">
-          <div>
-            <el-switch active-text="实时监控" v-model="watchEveryTime"></el-switch>
+        <el-col :span="8" style="display: flex;flex-direction: column;">
+          <div style="display: flex; flex-direction: row; ">
+            <el-switch active-text="实时监控" v-model="watchEveryTime" @change="onChangeWatchState"></el-switch>
             <el-button type="success" class="el-icon-refresh" size="mini" @click="onBtnClickUpdateTree">刷新</el-button>
           </div>
-          <div class="grid-content treeList">
+          <div class="grid-content treeList" style="flex: 1;">
+
             <el-tree :data="treeData"
                      :props="defaultProps"
-                     :expand-on-click-node="false"
+                     :highlight-current="true"
+                     :default-expand-all="false"
+                     :expand-on-click-node="true"
                      @node-click="handleNodeClick"></el-tree>
           </div>
         </el-col>
@@ -44,7 +47,7 @@
   // import injectScript from '../injectScript.js'
   // import EvalCode from "./evalCodeString.js";
 
-  let injectScript = "";
+
   const PluginMsg = require("../../core/plugin-msg");
 
   export default {
@@ -58,7 +61,7 @@
 
         defaultProps: {
           children: 'children',
-          label: 'label'
+          label: 'name'
         },
         watchEveryTime: false,// 实时监控节点树
         memory: {
@@ -79,7 +82,7 @@
         let eventMsg = data.msg;
         if (eventMsg === PluginMsg.Msg.ListInfo) {
           this.isShowDebug = true;
-          this._updateView(eventData);
+          this._updateTreeView(eventData);
         } else if (eventMsg === PluginMsg.Msg.Support) {
           this.isShowDebug = eventData.support;
         } else if (eventMsg === PluginMsg.Msg.NodeInfo) {
@@ -142,9 +145,30 @@
           this.evalInspectorFunction("getNodeInfo", `"${uuid}"`);
         }
       },
-      _updateView(data) {
+      onChangeWatchState() {
+        if (this.watchEveryTime) {
+          this.timerID = setInterval(function () {
+            this.onBtnClickUpdateTree();
+          }.bind(this), 100);
+        } else {
+          clearInterval(this.timerID);
+        }
+
+      },
+      _updateTreeView(data) {
+        this.treeData = [data.scene];
+        return;
         // 构建树形数据
-        this.treeData = [];
+        if (this.treeData.length === 0) {// 第一次赋值
+
+
+        } else {
+
+        }
+
+
+        let treeData = [];
+        debugger
         let sceneData = data.scene;
         if (sceneData) {
           // scene info
@@ -152,7 +176,7 @@
             type: sceneData.type, uuid: sceneData.uuid,
             label: sceneData.name, children: []
           };
-          this.treeData.push(dataRoot);
+          treeData.push(dataRoot);
           this.handleNodeClick(dataRoot);
           // scene children info
           for (let k in sceneData.children) {
@@ -160,14 +184,10 @@
             // let sceneItem = {uuid: itemSceneData.uuid, label: itemSceneData.name, children: []};
             let sceneItem = {};
             dealChildrenNode(itemSceneData, sceneItem);
-            this.treeData[0].children.push(sceneItem);
+            treeData[0].children.push(sceneItem);
           }
         }
-        // TODO 节点树折叠的问题
-        if (JSON.stringify(this.treeData) === "[]") {// 第一次赋值
-
-        } else {// 更新值
-        }
+        this.treeData = treeData;
 
         function dealChildrenNode(rootData, obj) {
           obj['data'] = rootData;
@@ -185,6 +205,7 @@
         }
       },
       _getInjectScriptString() {
+        let injectScript = "";
         let code = injectScript.toString();
         let array = code.split('\n');
         array.splice(0, 1);// 删除开头
@@ -237,8 +258,74 @@
       onBtnClickTest1() {
         chrome.devtools.inspectedWindow.eval(`window.ccinspector.testMsg1()`)
       },
+      _getTime() {
+        return new Date().getTime().toString();
+      },
       onBtnClickTest2() {
-        chrome.devtools.inspectedWindow.eval(`window.ccinspector.testMsg2()`)
+        // chrome.devtools.inspectedWindow.eval(`window.ccinspector.testMsg2()`)
+
+
+        let newData = [
+          {
+            name: this._getTime(),
+            children: [
+              {
+                name: this._getTime(),
+                children: [
+                  {
+                    name: this._getTime(),
+                  }
+                ]
+              },
+              {
+                name: this._getTime(),
+              }
+            ]
+          }
+
+        ]
+
+        // this.treeData = newData;
+        this._update37(this.treeData[0], newData[0])
+      },
+      _update37(oldTreeNode, newTreeNode) {
+        debugger
+        if (!newTreeNode) {
+          return;
+        }
+        if (!oldTreeNode) {
+          oldTreeNode = {name: "", children: []};
+        }
+        if (oldTreeNode.name !== newTreeNode.name) {
+          oldTreeNode.name = newTreeNode.name;
+        }
+
+        let oldChildren = oldTreeNode.children;
+        let newChildren = newTreeNode.children;
+
+        if (oldChildren.length === 0) {
+          oldChildren = newChildren;
+        } else {
+          // 比较2个数据: treeData, newTreeData
+          // 比较该层级的数据
+          for (let i = 0; i < newChildren.length; i++) {
+            let itemNew = newChildren[i];
+            let itemOld = oldChildren[i];
+            if (itemOld === undefined) {
+              // 老节点中没有
+              oldChildren.push(itemNew);
+            } else if (itemNew.name !== itemOld.name) {
+              // 替换
+              oldChildren.splice(i, 1, itemNew);
+            } else {
+              this._update37(itemOld, itemNew);
+            }
+          }
+          // 多余的删除了
+          if (oldChildren.length > newChildren.length) {
+            oldChildren.splice(newChildren.length, oldChildren.length - newChildren.length);
+          }
+        }
       },
       onBtnClickTest3() {
         // chrome.devtools.inspectedWindow.eval(`window.ccinspector.testMsg3()`)

@@ -8,12 +8,12 @@ chrome.devtools.panels.create("Cocos", "icon/icon48.png", "pages/devtools_panel.
     console.log("[CC-Inspector] Dev Panel Created!");
     let conn = chrome.runtime.connect({name: PluginMsg.Page.DevToolsPanel});
     conn.onMessage.addListener(function (event, sender) {
-      debugger
+      // debugger
     });
 
     panel.onShown.addListener(function (window) {
       console.log("panel show");
-      debugger
+      // debugger
       conn.postMessage({msg: PluginMsg.Msg.UrlChange, data: {}})
     });
     panel.onHidden.addListener(function (window) {
